@@ -40,7 +40,7 @@
   <div class="clear"></div>
   <footer></footer>
 </div>
-[[$stats/yandex]]
+[[stats/yandex]]
 [[*bottom]]
 <script>
   function hllinks() {

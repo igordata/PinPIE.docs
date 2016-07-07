@@ -4,6 +4,15 @@
     <a href="/ru/manual">Доки</a>
     <ul>
       <li>
+        <a href="/ru/manual/start">С чего начать?</a>
+        [[*menu start]]
+      </li>
+      
+      <li>
+        <a href="/ru/manual/server-configuration">Настройка сервера</a>
+        [[*menu server configuration]]
+      </li>
+      <li>
         <a href="/ru/manual/routing">Роутинг</a>
       </li>
       <li>

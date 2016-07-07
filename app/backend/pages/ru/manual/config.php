@@ -6,6 +6,7 @@
   <li><a href="#config-variables">Переменные конфига</a></li>
   <li><a href="#simplest-config">Простейший конфиг</a></li>
   <li><a href="#default-pinpie-settings">Дефолты</a></li>
+  <li><a href="#preinclude">preinclude.php</a></li>
   <li><a href="#cache">Кэш</a></li>
   <li><a href="#code-page">Code page</a></li>
   <li><a href="#static">Статики</a></li>
@@ -137,6 +138,41 @@
   "preinclude" => ROOT . DS . "preinclude.php",
   "postinclude" => ROOT . DS . "postinclude.php",
 ];', 'php') ?>
+  </section>
+
+
+  <section>
+    <header>
+      <h1>
+        <a name="preinclude" href="#preinclude">#</a>
+        Файлы preinclude.php и postinclude.php
+      </h1>
+    </header>
+    <p>
+      При каждом запросе PinPIE попытается подключить два файла, если они существуют:
+      <?= scx("ROOT/preinclude.php") ?> и <?= scx("ROOT/preinclude.php") ?>,
+      где <?= scx("ROOT") ?> это <a href="/ru/manual/constants#root">константа корневого пути</a>.
+      Пути к этим файлам можно изменить в <a href="http://pinpie.ru/ru/manual/config">конфиге</a>.
+    </p>
+    <p>
+      Сначала проверяется существование файла <?= scx("ROOT/preinclude.php") ?>.
+      Если он есть &mdash; он инклудится. Его отличие от <?= scx("ROOT/index.php") ?> в том,
+      что в момент его инклуда уже заданы основные параметры PinPIE: прочитан конфиг,
+      определён файл-обработчик запроса <?=scx('PinPIE::$document', 'php')?>, который можно изменить
+      по своему усмотрению.
+    </p>
+    <p>Данный файл подходит для размещения кода автозагрузчика классов.
+      Впрочем, для этой задачи подходит и <?= scx("ROOT/index.php") ?>.</p>
+    <p>
+      Потом, когда закончена обработка запроса, PinPIE пытается включить файл <?= scx("ROOT/preinclude.php") ?>.
+      Этот файл подходит для вывода дебаг информации и отложенных действий,
+      например с помощью <a href="http://php.net/manual/en/function.fastcgi-finish-request.php">fastcgi_finish_request()</a>.
+    </p>
+    <p>
+      При обновлении файлов PinPIE на новую версию, эти файлы не пропадут и не будут перезаписаны,
+      т.к. они отсутствуют в самом PinPIE. Так что можете уверенно использовать эти файлы
+      для своих нужд.
+    </p>
   </section>
 
   <section>

@@ -38,9 +38,7 @@
     [[*content]]
   </main>
   <div class="clear"></div>
-  <footer>
-    footer
-  </footer>
+  <footer></footer>
 </div>
 [[$stats/yandex]]
 [[*bottom]]

@@ -18,8 +18,7 @@
       </h1>
     </header>
     <h2>Простой</h2>
-    <code class="nginx">
-    <pre>server {
+    <pre><code class="nginx">server {
   server_name     site.com;
   root     /var/www/site.com/;
   access_log      /var/log/nginx/site.com.access.log  main;
@@ -34,11 +33,10 @@
   location ~* ^.+\.(jpg|jpeg|gif|ico|txt|png)$ {
       access_log  off;
   }
-}</pre>
-    </code>
+}</code></pre>
+
     <h2>С шардингом статик серверов</h2>
-    <code>
-      <pre>server {
+      <pre><code class="nginx">server {
   server_name     site.com;
   root     /var/www/site.com/;
   access_log      /var/log/nginx/site.com.access.log  main;
@@ -58,8 +56,8 @@
 server {
   server_name s1.site.com s2.site.com s3.site.com;
   root /var/www/site.com/;
-}</pre>
-    </code>
+}</code></pre>
+
     <h3></h3>
   </section>
 </article>

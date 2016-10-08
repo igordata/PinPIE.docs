@@ -1,12 +1,13 @@
-[title[=Templates]]
+[title[=Темплейты]]
 [sidemenu[ru/manual/sidemenu]]
 [menu templates[=
 <ul>
   <li><a href="/ru/manual/templates#description">Описание</a></li>
   <li><a href="/ru/manual/templates#page-templates">Темплейты страниц</a></li>
+  <li><a href="/ru/manual/templates#raw-output">Сырой вывод</a></li>
   <li><a href="/ru/manual/templates#tag-templates">Темплейты тегов</a></li>
   <li><a href="/ru/manual/templates#static-tags-templates">Темплейты статик тегов</a></li>
-  <li><a href="/ru/manual/templates#custom-template-function">Custom function</a></li>
+  <li><a href="/ru/manual/templates#templates-function">Custom function</a></li>
 </ul>
 ]]
 <article>
@@ -59,21 +60,13 @@
     <p>Ну и конечно, можно раскладывать темплейты по папкам:</p>
     <?= pcx('[[@template=folder/filename]]') ?>
     <p>Нужный темплейт можно установить и из php-кода:</p>
-    <?= pcx("PinPIE::setTemplate('main');
+    <?= pcx("PinPIE::templateSet('main');
 /* или */
-PinPIE::setTemplate('folder/folder/template');") ?>
+PinPIE::templateSet('folder/folder/template');") ?>
     <p>Внутри темплейта должен находиться такой <a href="/ru/manual/tags#placeholder">плейсхолдер</a>:</p>
     <?= pcx('[[*content]]') ?>
     <p>Он будет заменён на вывод страницы.</p>
     <p>Чтобы получать сырой текст без использования PHP, можно создать темплейт с одним только тегом <?= scx('[[*content]]') ?>.</p>
-    <p>
-      А из php-кода можно получить по-настоящему сырой вывод, если установить текущий темплейт в <span><code>false</code></span>.
-      Любая из этих строк кода отключает применение темплейта и заставляет результат работы страницы выводиться как есть:
-    </p>
-    <?= pcx('PinPIE::setTemplate(false);
-PinPIE::setTemplate(); // потому что по-умолчанию он как раз false
-PinPIE::$template = false; // я предпочитаю именно этот способ', 'php') ?>
-
     <h2>Примеры</h2>
     <h3>Пример 1</h3>
     <p>
@@ -134,6 +127,40 @@ PinPIE::$template = false; // я предпочитаю именно этот с
     <p>PinPIE заменит <?= scx('[[*title]]') ?> тег в темплейте на содержимое плейсхолдера.</p>
   </section>
 
+
+  <section>
+    <header>
+      <h1>
+        <a name="raw-output" href="#raw-output">#</a>
+        Сырой вывод
+      </h1>
+    </header>
+
+    <p>
+      Получить по-настоящему сырой вывод, можно из php-кода, если установить текущий темплейт в <span><code>false</code></span>.
+      Любая из этих строк кода отключает применение темплейта и заставляет результат работы страницы выводиться как есть, то есть без обработки:
+    </p>
+    <?= pcx('PinPIE::templateSet(false);
+PinPIE::templateSet(); // потому что по-умолчанию он как раз false
+PinPIE::$template = false; // я предпочитаю именно этот способ', 'php') ?>
+<p>В таком случае <b>обработка тегов не производится</b>, а значит <?=scx('[[$snippet]]')?> не будет обработан, и будет выведен как есть:</p>
+    <?=pcx('[[$snippet]]')?>
+    <p>То есть, вывод совершенно сырой и удобен для вывода json и ответов на ajax запросы.</p>
+    <p>
+      Чтобы в таком режиме получить результат обработки сниппета, необходимо воспользоваться методом
+      <a href="/ru/manual/methods#parsestring">PinPIE::parseString($string)</a>.
+      Он пропарсит строку на наличие тегов и вернёт обработанный результат:
+    </p>
+    <?= pcx('echo PinPIE::parseString(\'Ответ [[5$rand]]\');') ?>
+    <p>Вывод:</p>
+    <?= pcx('Ответ 42', 'html') ?>
+    <p>Это также сработает и для статик тегов, и для любых других.</p>
+    <p>
+      Если настолько сырой вывод не требуется, то можно использовать темплейт, состоящий из одного тега <?= scx('[[*content]]') ?>.
+      Тогда теги будут обрабатываться, а содержимое страницы будет выводиться так, будто никакого темплейта к ней не применялось.
+    </p>
+  </section>
+
   <section>
     <header>
       <h1>
@@ -158,7 +185,7 @@ PinPIE::$template = false; // я предпочитаю именно этот с
     <p>Чтобы применить темплейт к чанку, или сниппету, вам надо просто поставить его имя позади первой закрывающей скобки:</p>
     <?= pcx('[[$сниппет]<b>темплейт</b>]', 'html') ?>
 
-    <h3>Пример</h3>
+    <h2>Пример</h2>
     <p>Чтобы обернуть вывод сниппета в div, вам надо создать темплейт например "wrap.php" с кодом:</p>
     <?= pcx(h('<div>[[*content]]</div>')) ?>
     <p>Теперь вы можете применить этот сниппет вот так:</p>
@@ -167,6 +194,12 @@ PinPIE::$template = false; // я предпочитаю именно этот с
     <?= pcx(h('<?php echo rand(1, 100); ?>'), 'php') ?>
     <p>То вы получите:</p>
     <?= pcx(h('<div>42</div>'), 'html') ?>
+
+    <h2>Передача параметров</h2>
+    <p>В темплейт можно передать параметры, как в сниппет.</p>
+    <?= pcx('[[$snippet]wrap?foo=bar]') ?>
+    <p>Они будут доступны в темплейте как обычные переменные PHP:</p>
+    <?= pcx('var_dump($foo); // bar','PHP') ?>
   </section>
 
   <section>
@@ -185,14 +218,14 @@ PinPIE::$template = false; // я предпочитаю именно этот с
   <section>
     <header>
       <h1>
-        <a name="custom-template-function" href="#custom-template-function">#</a>
-        Custom template function
+        <a name="templates-function" href="#templates-function">#</a>
+        Templates function
       </h1>
     </header>
     <p>
       При применении темплейта PinPIE позволяет вызывать пользовательскую функцию.
-      Функция задаётся в <a href="/ru/manual/config#template-function">конфиге</a> и может принимать два аргумента:
-      параметры тега в виде массива, и спарсеный темплейт.
+      Функция задаётся в <a href="/ru/manual/config#templates-settings">конфиге</a> и принимает один аргумент &mdash;
+      текущий объект тега, со всеми его настройками.
     </p>
   </section>
 </article>

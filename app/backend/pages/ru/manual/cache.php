@@ -10,11 +10,11 @@
   <li><a href="/ru/manual/cache#cacher-disabled">Кэшер Disabled</a></li>
   <li><a href="/ru/manual/cache#cacher-files">Кэшер Files</a></li>
   <li><a href="/ru/manual/cache#cacher-memcached">Кэшер Memcached</a></li>
+  <li><a href="/ru/manual/cache#cacher-apcu">Кэшер APCu</a></li>
   <li><a href="/ru/manual/cache#cacher-custom">Свой кэшер</a></li>
   <li><a href="/ru/manual/cache#cache-rules">Правила кэша</a></li>
 </ul>
 ]]
-
 <article>
   <header><h1>Кэш</h1></header>
   <p>
@@ -22,8 +22,7 @@
   </p>
   <p>
     А вот чанки никогда не кэшируются. Предполагается, что чанки это просто кусочки текста.
-    Чанки хранятся в "*.php" файлах, и обычно кешируются опкод кешерами, такими как APC, XCache, eAccelerator и т.п.
-    С версии 5.5.0 PHP идёт вместе с кэшером опкодов Zend.
+    Чанки хранятся в "*.php" файлах, и обычно кешируются опкод кешерами, такими как OPcache, APC, XCache, eAccelerator и т.п.
     Поэтому чанки никак дополнительно не кэшируются. Если кэширование всё же требуется &mdash; используйте сниппет.
   </p>
   <p>
@@ -51,7 +50,7 @@
       Для лучшего представления о том, как работает кэш, нужно знать вот эти простые вещи:
     </p>
     <ul>
-      <li>Если сниппет закэшировался &mdash; он закешировался так, как был нарисован.</li>
+      <li>Если сниппет закэшировался &mdash; он закешировался так, как был нарисован, без учета применения темплейта.</li>
       <li>Если файл сниппета изменился &mdash; он будет перерисован.</li>
       <li>Если в сниппете есть дочерние теги &mdash; они будут отрисованы единожды, и будут закешированы в выводе этого сниппета.</li>
       <li>Если у сниппета есть дочерние теги (на любой глубине) и один из их файлов изменился &mdash; сниппет будет перерисован.</li>
@@ -79,10 +78,10 @@
       <li><?= scx('[[<b>3600</b>$some_snippet]]') ?> &mdash; сниппет закеширован на один час</li>
       <li>
         <?= scx('[[!$some_snippet]]') ?> &mdash; закэширован навечно. Сниппет кэшируется на
-        <span><code>CFG::$pinpie['cache forever time']</code></span> секунд,
+        <span><code>PinPIE::$conf->pinpie['cache forever time']</code></span> секунд,
         что по-умолчанию равно <a href="http://php.net/manual/ru/reserved.constants.php#constant.php-int-max" target="_blank">PHP_INT_MAX</a>. Для 32-битных систем это около 68 лет, а для 64-битных это ещё дольше.
-        Если потребуется, вы можете установить ваше собственное значение <a href="/ru/manual/cfg#cache_forever_time" title="Read more">времени вечного кэширования</a>
-        в вашем <a href="/ru/manual/config" title="Read config manual">конфиге</a>.
+        Если потребуется, вы можете установить ваше собственное значение времени вечного кэширования
+        в вашем <a href="/ru/manual/config#pinpie-cache" title="Read config manual">конфиге</a>.
       </li>
     </ul>
   </section>
@@ -135,6 +134,56 @@ echo rand(1, 100);')); ?>
   <section>
     <header>
       <h1>
+        <a name="cache-storage" href="#cache-storage">#</a>
+        Где хранится
+      </h1>
+    </header>
+    <p>На текущий момент из коробки есть четыре варианта места хранения кэша:</p>
+    <ul>
+      <li>Disabled &mdash; каждый сниппет будет выполняться каждый раз</li>
+      <li>Files &mdash; кеш хранится в файлах (по умолчанию)</li>
+      <li>Memcached &mdash; это memcached</li>
+      <li>APC &mdash; хранение в хранилище переменных APC</li>
+    </ul>
+    <p>
+      Место хранения кэша может быть задано в конфиге в <?= scx('$pinpie["cache class"]') ?>.
+      Эта переменная отвечает за то, какой класс кешера будет использован.
+      Значение по умолчанию это <?= scx('\pinpie\pinpie\Cachers\Files') ?>.
+      Более подробное описание смотрите ниже.
+    </p>
+  </section>
+
+  <section>
+    <header>
+      <h1>
+        <a name="set" href="#set">#</a>
+        Установить кешер
+      </h1>
+    </header>
+    <p>
+      Чтобы включить нужный кешер, нужно в конфиге прописать его класс в <?= scx('$pinpie["cache class"]') ?> например так:
+    </p>
+    <?= pcx('$pinpie[\'cache class\'] = \'\pinpie\pinpie\Cachers\Disabled\';') ?>
+    <p>Вы можете установить свой собственный кешер.</p>
+  </section>
+
+  <section>
+    <header>
+      <h1>
+        <a name="hash" href="#hash">#</a>
+        Настройки
+      </h1>
+    </header>
+    <p>
+      В выбранный класс кешера передаются настройки из конфига, которые задаются в переменной <?= scx('$cache') ?>.
+      Дефолтные настройки у каждого класса свои. Если вы хотите использовать свой кешер, то можете передавать любые свои
+      настройки через эту переменную.
+    </p>
+  </section>
+
+  <section>
+    <header>
+      <h1>
         <a name="hash" href="#hash">#</a>
         Хэш
       </h1>
@@ -147,7 +196,6 @@ echo rand(1, 100);')); ?>
       <li>параметры URL query (если <a href="/ru/manual/cache#cache-rules" title="See below on this page">возможно</a>)</li>
       <li>имена всех родительских тегов</li>
       <li>имя сервера</li>
-      <li>соль <?= scx('CFG::$random_stuff') ?></li>
       <li>некоторые другие параметры</li>
     </ul>
     <p>
@@ -155,34 +203,43 @@ echo rand(1, 100);')); ?>
       А так как PinPIE не сможет найти сниппет в кеше, то будет вынужден выполнить его ещё раз.
       Таким образом, если изменится файл сниппета &mdash; он будет перекэширован.
     </p>
-
-    <p>
-      Алгоритм хэширования может быть установлен в конфиге
-      <?= scx('CFG::$pinpie["cache hash algo"]', 'php') ?>. По умолчанию это "sha1".
-      Список доступных алгоритмов может быть найден с помощью функции
-      <a href="http://php.net/manual/ru/function.hash-algos.php" target="_blank">hash_algos()</a>.
-    </p>
   </section>
 
   <section>
     <header>
       <h1>
-        <a name="cache-storage" href="#cache-storage">#</a>
-        Где хранится
+        <a name="cacher-class" href="#cacher-class">#</a>
+        Класс Cacher
       </h1>
+      Каждый кешер должен наследоваться от этого класса.
     </header>
-    <p>На текущий момент есть четыре варианта места хранения кэша:</p>
+    <p>
+      Этот класс содержит два основных метода get() и set(), которые обеспечивают взаимодействие с кешем.
+      Так же он содержит вспомогательные методы getHash() и hashBase(), которые отвечают за генерацию хеша кешируемого сниппета.
+    </p>
+    <p>
+      Являясь прототипом для всех остальных кешеров, этот класс содержит в себе настройки, которые могут использоваться в других
+      классах.
+    </p>
     <ul>
-      <li>disabled &mdash; каждый сниппет будет выполняться каждый раз</li>
-      <li>files &mdash; кеш хранится в файлах (по умолчанию)</li>
-      <li>memcached &mdash; это memcached</li>
-      <li>apc &mdash; хранение в хранилище переменных APC</li>
+      <li><b>algo</b> &mdash; алгоритм хеширования. Дефолтное значение <?= scx('sha1') ?>.</li>
+      <li><b>random stuff</b> &mdash; должно содержать строку со случайным набором символов.</li>
+      <li><b>raw hash</b> &mdash; Настройка определяет выдавать ли хеш в виде набора октетов, или прямо теми закорючками, что сгенерировались.</li>
     </ul>
     <p>
-      Место хранения кэша может быть задано в конфиге в <?= scx('CFG::$pinpie["cache type"]') ?>.
-      Эта переменная отвечает за то, какой класс кешера будет использован.
-      Значение по умолчанию это "filecache".
+      Эти настройки живут в поле settings экземпляра класса и мержатся с дефолтами и настройками, приходящими из конфига:
     </p>
+    <?= pcx('  public function __construct(PP $pinpie, $settings = []) {
+    $this->pinpie = $pinpie;
+    $defaults = [];
+    $defaults[\'algo\'] = \'sha1\';
+    $defaults[\'random stuff\'] = \'\';
+    $defaults[\'raw hash\'] = false;
+    $this->settings = array_merge($defaults, $settings);
+  }
+', 'PHP') ?>
+    <p>Желательно задать значение <?= scx('random stuff', 'HTML') ?> в конфиге:</p>
+    <pre><code class="PHP hljs">$cache[<span class="hljs-string">"random stuff"</span>]&nbsp;=&nbsp;<span class="hljs-string">"[[$random_stuff]]"</span>;</code></pre>
   </section>
 
   <section>
@@ -191,27 +248,32 @@ echo rand(1, 100);')); ?>
         <a name="cacher-disabled" href="#cacher-disabled">#</a>
         Кэшер Disabled
       </h1>
-      <p><?= scx('$pinpie["cache type"] = "disabled";') ?></p>
+      <p><?= scx('$pinpie["cache class"] = \'\pinpie\pinpie\Cachers\Disabled\';') ?></p>
     </header>
     <p>Это простейший класс кэшера:</p>
-    <?= pcx('namespace PinPIE;
+    <?= pcx('namespace pinpie\pinpie\Cachers;
 
-class CacherDisabled implements Cacher {
+use pinpie\pinpie\Tags\Tag;
 
-  public function get($hash) {
+class Disabled extends Cacher {
+
+  public function get(Tag $tag) {
     return false;
   }
 
-  public function set($hash, $content, $time) {
+  public function set(Tag $tag, $data, $time = 0) {
     return true;
   }
-
+  
 }', 'php') ?>
     <p>
-      Этот класс состоит из двух методов-заглушек, которые заставляют PinPIE думать, что любая запись в кэш всегда
-      проходит удачно, а любое чтение &mdash; не удачно. Таким образом всегда, когда PinPIE запрашивает данные,
-      он получает "false". Это заставляет его выполнить сниппет в любом случае.
+      Этот класс наследуется от класса <?= scx('Cacher') ?>, который имеет два метода-заглушки на чтение и запись.
+      Чтение всегда возвращает <?= scx('false') ?>, а запись &mdash; <?= scx('true') ?>, что заставляет PinPIE думать,
+      что любая запись в кэш всегда проходит удачно, а любое чтение &mdash; неудачно.
+      Таким образом всегда, когда PinPIE запрашивает данные, он получает "false".
+      Это заставляет его выполнить сниппет в любом случае.
     </p>
+    <p>Настроек у него нет.</p>
   </section>
 
   <section>
@@ -220,15 +282,20 @@ class CacherDisabled implements Cacher {
         <a name="cacher-files" href="#cacher-files">#</a>
         Кэшер Files
       </h1>
-      <p><?= scx('$pinpie["cache type"] = "files";') ?></p>
+      <p><?= scx('$pinpie["cache class"] = \'\pinpie\pinpie\Cachers\Files\';') ?></p>
 
     </header>
     <p>
-      Кэшер "files" хранит кэш в файлах, названных по их хэшу, в этой вот папке:
+      Кэшер "files" хранит кэш в файлах, названных по их хэшу.
+      Место хранения может быть задано в массиве настроек кеша <?= scx('$cache[\'path\']') ?>.
     </p>
-    <?= scx('CFG::$pinpie["working folder"] . DS . "filecache" . DS') ?>
+
     <p>По умолчанию это:</p>
-    <?= pcx('ROOT/filecache') ?>
+    <?= pcx('$defaults["path"] = $this->pinpie->root . DIRECTORY_SEPARATOR . "filecache";', 'PHP') ?>
+    <p>
+      Т.е. относительно корня вашего сайта, это папка <?= scx('/filecache') ?>
+      с разрешением на запись для юзера, из под которого запущен процесс PHP.
+    </p>
     <p>
       Это просто, но весьма быстрый способ кэширования сниппетов. Пока в вашей ОС есть <b>свободная</b> память, у вас будет и
       очень быстрое кэширование, порой быстрее даже memcached. Неудобство состоит в том, что файлы чистить придётся
@@ -243,12 +310,15 @@ class CacherDisabled implements Cacher {
     <p>Преимущества этого метода такие:</p>
     <ul>
       <li>Очень быстрый.</li>
-      <li>Работает везде. Единственное требование это право писать в папку "filecache".</li>
+      <li>
+        Работает везде. Единственное требование это право писать в папку "filecache".
+        Может использоваться на хостинге, где нет возможности устанавливать расширения PHP, отсутствует Memcache или APCu.
+      </li>
     </ul>
     <p>
       Этот тип кэша быстр, потому, что современные ОС хранят недавние файлы в свободной памяти.
       Все файловые операции крайне оптимизированы. Поэтому производительность кэширования в файлах может быть
-      выше, чем даже у Memcached через юникс-сокет.
+      выше, чем даже у Memcached через юникс-сокет. К сожалению, он же может быть и самым медленным.
     </p>
   </section>
 
@@ -258,22 +328,72 @@ class CacherDisabled implements Cacher {
         <a name="cacher-memcached" href="#cacher-memcached">#</a>
         Кэшер Memcached
       </h1>
-      <p><?= scx('$pinpie["cache type"] = "memcached";') ?></p>
+      <p><?= scx('$pinpie["cache class"] = \'\pinpie\pinpie\Cachers\Memcache\';') ?></p>
     </header>
     <p>
       Кэширование на основе Memcached использует для работы объект Memcache.
       Естественно с поддержкой подключения к нескольким серверам.
-      Пул серверов задаётся в переменной конфига <?= scx('CFG::$pinpie["cache servers"]') ?> в виде массива пар хост и порт.
+      Пул серверов задаётся в переменной конфига <?= scx('$cache["servers"]') ?> в виде массива пар хост и порт.
       Вот код:
     </p>
-    <?= pcx('$pinpie["cache servers"] = [
+    <?= pcx('$cache["servers"] = [
   ["host" => "localhost", "port" => 11211],
 ]', 'php') ?>
-    <p>Если хотите, вы можете использовать этот массив для хранения конфигруации вашего собственного кэшера.</p>
     <p>
-      Обязательно проверьте, что вы установили уникальную соль для каждого сайта в переменной <?= scx('CFG::$random_stuff') ?>.
-      Это предотвратит совпадения хэша для разных сниппетов.
+      Обязательно проверьте, что вы установили уникальную соль для каждого сайта в переменной <?= scx('$cache[\'random stuff\']') ?>.
+      Это предотвратит совпадения хэша для разных сайтов, запущенных на одном хостинге, или имеющих доступ к одному хранилищу кеша.
     </p>
+  </section>
+
+  <section>
+    <header>
+      <h1>
+        <a name="cacher-apcu" href="#cacher-apcu">#</a>
+        Кэшер APCu
+      </h1>
+      <p><?= scx('$pinpie["cache class"] = \'\pinpie\pinpie\Cachers\APCu\';') ?></p>
+    </header>
+    <p>
+      Основано на расширении <a href="http://php.net/manual/ru/book.apcu.php">APCu</a> (ранее APC).
+      Настроек кроме стандартных из Cacher не имеет.
+      Вот весь его код:
+    </p>
+    <?= pcx('
+namespace pinpie\pinpie\Cachers;
+
+use \pinpie\pinpie\PP;
+use \pinpie\pinpie\Tags\Tag;
+
+class APC extends Cacher {
+  protected $bc = false;
+
+  public function __construct(PP $pinpie, array $settings = []) {
+    if (function_exists(\'apc_fetch\')) {
+      $this->bc = true;
+    }
+    parent::__construct($pinpie, $settings);
+  }
+
+  public function get(Tag $tag) {
+    $hash = $this->getHash($tag);
+    if ($this->bc) {
+      return apc_fetch($hash);
+    } else {
+      return apcu_fetch($hash);
+    }
+  }
+
+  public function set(Tag $tag, $data, $time = 0) {
+    $hash = $this->getHash($tag);
+    if ($this->bc) {
+      return apc_store($hash, $data, $time);
+    } else {
+      return apcu_store($hash, $data, $time);
+    }
+  }
+
+}', 'php') ?>
+    <p>Самый быстрый вариант. APC работает внутри самого процесса PHP, имеет доступ к его памяти и хранит переменные PHP как есть, что и является причиной скорости.</p>
   </section>
 
   <section>
@@ -282,36 +402,31 @@ class CacherDisabled implements Cacher {
         <a name="cacher-custom" href="#cacher-custom">#</a>
         Свой кэшер
       </h1>
-      <p><?= scx('$pinpie["cache type"] = "custom";') ?></p>
+      <p><?= scx('$pinpie["cache class"] = \'\YourCacher\';') ?></p>
     </header>
     <p>
-      PinPIE позволяет использовать и ваш собственный кэшер. Вам нужно <b>наследоваться от интерфейса \PinPIE\Cacher</b>,
-      который можно найти в файле "/pinpie/classes/cacher.php". Он автоматически иклюдится при загрузке.
+      PinPIE позволяет использовать и ваш собственный кэшер. Вам нужно наследоваться от класса<?= scx('\pinpie\pinpie\Cachers\Cacher') ?>,
+      который можно найти в файле <?= scx('/scr/Cachers/Cacher.php') ?>.
     </p>
-    <p>Интерфейс кэшера состоит из двух методов:</p>
-    <?= pcx('namespace PinPIE;
-
-interface Cacher {
-  public function get($hash);
-
-  public function set($hash, $content, $time);
-}', 'php') ?>
-    <p>Для инъекции кэшера используйте эту функцию:</p>
+    <p>
+      PinPIE в своей работе использует два метода: <?= scx('get(pinpie\pinpie\Tags\Tag $tag)') ?> и
+      <?= scx('set(pinpie\pinpie\Tags\Tag $tag, $data, $time = 0)') ?>, куда передаются следующие параметры:
+    </p>
+    <ul>
+      <li><b>$tag</b> &mdash; экземпляр тега, со всеми настройками</li>
+      <li><b>$data</b> &mdash; то, что кеширует PinPIE в set(); то, что он потом ожидает получить из get()</li>
+      <li>
+        <b>$time</b> &mdash; время в секундах на сколько кешировать. Не обязательно.
+        PinPIE всё равно сохраняет время в $data и потом проверяет.
+      </li>
+    </ul>
+    <p>
+      Кешер можно назначить в конфиге через <?= scx('$pinpie["cache class"] = "\YourCacher";') ?>
+      или установить кешер во время работы PinPIE, если вдруг вам это потребовалось.
+      Для инъекции кэшера используйте эту функцию:
+    </p>
     <?= pcx('PinPIE::injectCacher($cacher);') ?>
-    <p>где <b>$cacher</b> это ваш объект, унаследованный от интерфейса <b>\PinPIE\Cacher</b></p>
-    <p>
-      Не обязательно, но желательно установить <?= scx('CFG::$pinpie["cache type"]') ?> равным "custom" или "disabled",
-      ибо по умолчанию загружается кэшер "files", даже если не используется.
-    </p>
-    <p>
-      Если установлен тип кэша "custom", но $cacher пустая, то будет использован "disabled" кэшер.
-      В любом случае, PinPIE не обязывает вас устанавливать кэшер при запуске. Вы можете установить ваш кэшер и позднее,
-      но лучше не слишком затягивать.
-    </p>
-    <p>
-      На заметку: PinPIE предоставляет результат функции hash() в сыром бинарном виде.
-      Возможно вам может понадобиться функция <a href="http://php.net/manual/ru/function.bin2hex.php" target="_blank">bin2hex()</a>.
-    </p>
+    <p>где <b>$cacher</b> это ваш объект, унаследованный от класса <b>\PinPIE\Cacher</b></p>
 
   </section>
 
@@ -326,12 +441,13 @@ interface Cacher {
       PinPIE даёт вам дополнительный контроль над процессом кэширования совершенно бесплатно. Все страницы 404 имеют разный URL, и из-за
       этого может расплодиться слишком много нежелательного кэша, который никогда не используется. Или могут быть некие
       GET-параметры, которые не влияют на страницу, и вы бы не хотели, чтобы они использовались при генерации хэша, так как это
-      опять же породит дополнительный кэш. Чтобы предотвратить это безобразие были созданы правила кэширования, позволяющие
+      опять же породит дополнительный кэш. Чтобы предотвратить это безобразие существуют правила кэширования, позволяющие
       всё это дело контролировать.
     </p>
     <p>
       PinPIE позволяет вам игнорировать URL или GET-параметры, и задать правила генерации хэша.
-      Правила кэширования можно установить в конфиге в <?= scx('CFG::$pinpie["cache rules"]') ?>. Вот дефолтные правила:
+      Правила кэширования можно установить в конфиге в <?= scx('PinPIE::$conf->pinpie["cache rules"]') ?>.
+      Вот дефолтные правила:
     </p>
     <?= pcx('"cache rules" => [
   "default" => ["ignore url" => false, "ignore query params" => false],

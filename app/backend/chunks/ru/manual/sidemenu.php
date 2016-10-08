@@ -7,10 +7,13 @@
         <a href="/ru/manual/start">С чего начать?</a>
         [[*menu start]]
       </li>
-      
       <li>
         <a href="/ru/manual/server-configuration">Настройка сервера</a>
         [[*menu server configuration]]
+      </li>
+      <li>
+        <a href="/ru/manual/config">Конфиг</a>
+        [[*menu config]]
       </li>
       <li>
         <a href="/ru/manual/routing">Роутинг</a>
@@ -30,14 +33,6 @@
       <li>
         <a href="/ru/manual/cache">Кэш</a>
         [[*menu cache]]
-      </li>
-      <li>
-        <a href="/ru/manual/config">Конфиг</a>
-        [[*menu config]]
-      </li>
-      <li>
-        <a href="/ru/manual/constants">Константы</a>
-        [[*menu constants]]
       </li>
       <li>
         <a href="/ru/manual/methods">Методы</a>

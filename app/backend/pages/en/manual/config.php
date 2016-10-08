@@ -48,7 +48,7 @@
       <li><?= scx('$pinpie') ?> &mdash; array to store PinPIE settings.</li>
       <li>
         <?= scx('$conf') ?> &mdash; array for your custom settings, you can store here any settings you need,
-        and access it by <?= scx('CFG::$conf', 'php') ?> anywhere.
+        and access it by <?= scx('PinPIE::$conf->conf', 'php') ?> anywhere.
       </li>
       <li><?= scx('$databases') ?> &mdash; store here settings to connect to your databases.</li>
       <li><?= scx('$static_servers') ?> &mdash; array of static servers (see <a href="/en/manual/static">static readme</a>).</li>
@@ -249,7 +249,7 @@
     <h2>Custom configuration</h2>
     <p>
       You can store any other non-PinPIE settings in <?= scx('$conf') ?> array, if you want. It will be available globally
-      in <?= scx('CFG::$conf', 'php') ?>.
+      in <?= scx('PinPIE::$conf->conf', 'php') ?>.
     </p>
     <h2>Databases array</h2>
     <p>
@@ -265,7 +265,7 @@
     <p>
       For security reason you have to set <?= scx('$random_stuff') ?> variable to random string, unique to every your site.
       This variable is used in <a href="/en/manual/cache#hash">cache hash</a> generation, and can be used anywhere in your
-      code via <?= scx('CFG::$random_stuff') ?>. Just remember, that it was not created for a cryptographic use, because
+      code via <?= scx('PinPIE::$conf->random_stuff') ?>. Just remember, that it was not created for a cryptographic use, because
       to be a real salt it have to be different every time. Also, some cryptographic functions can't use such long strings
       in their algo.
     </p>
@@ -309,15 +309,15 @@
 
   /*
   * Page not found handler
-  * The file in CFG::$pinpie["pages folder"] that will be used when requested page cannot be found.
+  * The file in PinPIE::$conf->pinpie["pages folder"] that will be used when requested page cannot be found.
   */
   $pinpie["page not found"] = "notfound.php";
 
   /*
   * Route to parent directive
-  * When requested URL is parsed, the extention ".php" will be added to path and the corresponding file will be included from CFG::$pinpie["pages folder"].
-  * Example: If URL is "/some/requested/path", then CFG::$pinpie["pages folder"]."/some/requested/path.php" will be checked.
-  * If no such file exist, then PinPIE will try it as a folder and file CFG::$pinpie["pages folder"]."/some/requested/path/index.php" will be checked.
+  * When requested URL is parsed, the extention ".php" will be added to path and the corresponding file will be included from PinPIE::$conf->pinpie["pages folder"].
+  * Example: If URL is "/some/requested/path", then PinPIE::$conf->pinpie["pages folder"]."/some/requested/path.php" will be checked.
+  * If no such file exist, then PinPIE will try it as a folder and file PinPIE::$conf->pinpie["pages folder"]."/some/requested/path/index.php" will be checked.
   * If no such file will be found, then the last part of URL will be cut off, and the process repeats.
   * This directive allow you to control behavior of parser and how many times the cut-and-check process will be repeated.
   * Use some big value to route all requests like "handler/some/very/long/r/e/q/u/e/s/t/" to a "handler.php" file.
@@ -397,7 +397,7 @@
 
   /*
   * $databases variable
-  * It"s accessible through CFG::$databases, so you can store here database settings and use them anywhere.
+  * It"s accessible through PinPIE::$conf->databases, so you can store here database settings and use them anywhere.
   */
   $databases["main"] = [
     "host" => "localhost",
@@ -411,7 +411,7 @@
 
   /*
   * Custom settings variable
-  * It"s accessible through CFG::$conf. You can store here any config settings you want.
+  * It"s accessible through PinPIE::$conf->conf. You can store here any config settings you want.
   */
   $conf["any settings"] = "some";
 

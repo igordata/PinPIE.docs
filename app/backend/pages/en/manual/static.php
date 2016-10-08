@@ -102,11 +102,11 @@
     </p>
     <p>
       List of static content servers is to be set in config file by <?= scx('$static_servers', 'php') ?> variable
-      and is accessible outside via <?= scx('CFG::$static_servers', 'php') ?>. Default value is an empty array.
+      and is accessible outside via <?= scx('PinPIE::$conf->static_servers', 'php') ?>. Default value is an empty array.
     </p>
     <p>
       Server is chosen by <?= scx('Staticon::getServer($file)', 'php') ?> method, where $file is path to file inside
-      <?= scx('CFG::$pinpie["static folder"]') ?>. Currently there is no way to redefine this method in config file,
+      <?= scx('PinPIE::$conf->pinpie["static folder"]') ?>. Currently there is no way to redefine this method in config file,
       but it have to be done one day to allow more control over server load and CDN balancing, etc.
     </p>
     <h3>Example</h3>
@@ -137,12 +137,12 @@
     <p>
       Currently there are three static types: js, css and img. By default js and css are allowed to be compressed and minified.
       Type img is not allowed to be minified or gzipped by default. Types to minify or to gzip are listed in
-      <?= scx('CFG::$pinpie["static minify types"]', 'php') ?> and <?= scx('CFG::$pinpie["static gzip types"]', 'php') ?>
+      <?= scx('PinPIE::$conf->pinpie["static minify types"]', 'php') ?> and <?= scx('PinPIE::$conf->pinpie["static gzip types"]', 'php') ?>
       arrays respectively.
     </p>
     <p>
       You can use any custom types to separate your minification options. Compression have only one option &mdash;
-      compression level set in <?= scx('CFG::$pinpie["static gzip level"]', 'php') ?>. By default it is 5.
+      compression level set in <?= scx('PinPIE::$conf->pinpie["static gzip level"]', 'php') ?>. By default it is 5.
     </p>
   </section>
 
@@ -152,10 +152,10 @@
     </header>
     <p>
       You can make your web-server <a href="https://www.google.com/search?q=pre-compressed+static" target="_blank">serve pre-compressed files</a>
-      instead original ones. You can set compression level in <?= scx('CFG::$pinpie["static gzip level"]', 'php') ?>.
+      instead original ones. You can set compression level in <?= scx('PinPIE::$conf->pinpie["static gzip level"]', 'php') ?>.
     </p>
     <p>To be pre-compressed static file type have to be in array</p>
-    <?= pcx('CFG::$pinpie["static gzip types"]', 'php') ?>
+    <?= pcx('PinPIE::$conf->pinpie["static gzip types"]', 'php') ?>
     <p>which default value is</p>
     <?= pcx("['js', 'css']") ?>
     <p>
@@ -177,11 +177,11 @@
       PinPIE can check if minified version of the requested file exists in directory, and change the static tag path to the
       corresponding path to minified file. If minified version is older than a original file and tag type is in array
     </p>
-    <?= pcx('CFG::$pinpie["static minify types"]', 'php') ?>
+    <?= pcx('PinPIE::$conf->pinpie["static minify types"]', 'php') ?>
     <p>than PinPIE will start minifier. By default this types are:</p>
     <?= pcx("['js', 'css']") ?>
     <p>If tag type is in this array, than PinPIE will try to call function, stored in:</p>
-    <?= pcx('CFG::$pinpie["static minify function"]', 'php') ?>
+    <?= pcx('PinPIE::$conf->pinpie["static minify function"]', 'php') ?>
     <p>
       You have to write this function by your own. In that function you have to call your favorite minifier or
       schedule this operation. Minifier call <b>can be asynchronous</b>. Anyway the newer file will be used in tag URL.
@@ -204,17 +204,17 @@ $pinpie["static minify function"] = function(){/.../};') ?>
     <ul>
       <li>
         <?= scx('$filepath') ?> is the file path from tag.
-        Its value is <?= scx('CFG::$pinpie["static folder"] . "/main.css"') ?>.
+        Its value is <?= scx('PinPIE::$conf->pinpie["static folder"] . "/main.css"') ?>.
       </li>
       <li>
         <?= scx('$minfilepath') ?> is the file path to minified version to check.
-        Value: <?= scx('CFG::$pinpie["static folder"] . "/main.min.css"') ?>
+        Value: <?= scx('PinPIE::$conf->pinpie["static folder"] . "/main.min.css"') ?>
       </li>
       <li>
         <?= scx('$type') ?> here is "css". It is <b>not</b> taken from file extension. It is taken from %<b>css</b> tag type.
       </li>
       <li>
-        <?= scx('CFG::$pinpie["static minify types"]') ?> is array with default value <?= scx('["js", "css"]') ?>.
+        <?= scx('PinPIE::$conf->pinpie["static minify types"]') ?> is array with default value <?= scx('["js", "css"]') ?>.
         You can change it in a config file.
       </li>
     </ul>
@@ -228,7 +228,7 @@ $pinpie["static minify function"] = function(){/.../};') ?>
       <h1>Dimensions</h1>
     </header>
     <p>PinPIE allow you to get images dimensions for some static tags. This tags types are listed in</p>
-    <?= pcx('CFG::$pinpie["static dimensions types"]', 'php') ?>
+    <?= pcx('PinPIE::$conf->pinpie["static dimensions types"]', 'php') ?>
     <p>which is by default:</p>
     <?= pcx('["img"]', 'php') ?>
     <p>
@@ -254,9 +254,9 @@ $pinpie["static minify function"] = function(){/.../};') ?>
     </header>
     <p>Every time PinPIE finds static tag, it checks static tag type to exist in this arrays:</p>
     <ul>
-      <li><?= scx('CFG::$pinpie["static minify types"]', 'php') ?></li>
-      <li><?= scx('CFG::$pinpie["static gzip types"]', 'php') ?></li>
-      <li><?= scx('CFG::$pinpie["static dimensions types"]', 'php') ?></li>
+      <li><?= scx('PinPIE::$conf->pinpie["static minify types"]', 'php') ?></li>
+      <li><?= scx('PinPIE::$conf->pinpie["static gzip types"]', 'php') ?></li>
+      <li><?= scx('PinPIE::$conf->pinpie["static dimensions types"]', 'php') ?></li>
     </ul>
     <p>
       If type is not in this arrays &mdash; PinPIE will not try to do corresponding tasks.

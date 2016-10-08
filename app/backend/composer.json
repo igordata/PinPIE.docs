@@ -1,0 +1,16 @@
+{
+    "name": "pinpie/docs",
+    "description": "PinPIE documentation site",
+    "type": "project",
+    "require": {
+        "pinpie/pinpie": "*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Igor Data",
+            "email": "igor.s.data@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}

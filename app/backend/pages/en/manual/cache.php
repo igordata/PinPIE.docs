@@ -72,7 +72,7 @@
       <li><?= scx('[[<b>3600</b>$some_snippet]]') ?> &mdash; snippet is cached for one hour</li>
       <li>
         <?= scx('[[!$some_snippet]]') ?> &mdash; cache forever. Snippet is cached for
-        <span><code>CFG::$pinpie['cache forever time']</code></span> seconds,
+        <span><code>PinPIE::$conf->pinpie['cache forever time']</code></span> seconds,
         which by default is <a href="http://php.net/manual/en/reserved.constants.php#constant.php-int-max" target="_blank">PHP_INT_MAX</a>. For 32-bit systems it's about 68 years, for 64-bit it's much much longer.
         You can set your own <a href="/en/manual/cfg#cache_forever_time" title="Read more">cache forever time</a>
         option value in <a href="/en/manual/config" title="Read config manual">config</a>.
@@ -133,7 +133,7 @@ echo rand(1, 100);')); ?>
       <li>URL query params (if <a href="/en/manual/cache#cache-rules" title="See below on this page">possible</a>)</li>
       <li>all parent tags names</li>
       <li>server name</li>
-      <li>salt <?= scx('CFG::$random_stuff') ?></li>
+      <li>salt <?= scx('PinPIE::$conf->random_stuff') ?></li>
       <li>some other params</li>
     </ul>
     <p>
@@ -144,7 +144,7 @@ echo rand(1, 100);')); ?>
 
     <p>
       Algorithm used to produce hash can be set in config in
-      <?= scx('CFG::$pinpie["cache hash algo"]', 'php') ?>. By default it is "sha1".
+      <?= scx('PinPIE::$conf->pinpie["cache hash algo"]', 'php') ?>. By default it is "sha1".
       List of available algos can be found with <a href="http://php.net/manual/en/function.hash-algos.php">hash_algos()</a>
       function.
     </p>
@@ -161,7 +161,7 @@ echo rand(1, 100);')); ?>
       <li>memcached &mdash; memcached-based storage</li>
     </ul>
     <p>
-      Cache storage can be set in config by <?= scx('CFG::$pinpie["cache type"]') ?>.
+      Cache storage can be set in config by <?= scx('PinPIE::$conf->pinpie["cache type"]') ?>.
       This variable defines whitch cache class will be used.
       Default value is "filecache".
     </p>
@@ -198,7 +198,7 @@ class CacherDisabled implements Cacher {
     </header>
     <p>
       Files cacher uses this folder to store cache in files named by its hash.</p>
-    <?= scx('CFG::$pinpie["working folder"] . DS . "filecache" . DS') ?>
+    <?= scx('PinPIE::$conf->pinpie["working folder"] . DS . "filecache" . DS') ?>
     <p>By default it's:</p>
     <?= pcx('ROOT/filecache') ?>
     <p>
@@ -227,7 +227,7 @@ class CacherDisabled implements Cacher {
     </header>
     <p>
       Memcached-based caching class uses Memcache object to store cache. Sure it have multiple servers support.
-      Server pool is set in config var <?= scx('CFG::$pinpie["cache servers"]') ?> as array of host and port pairs.
+      Server pool is set in config var <?= scx('PinPIE::$conf->pinpie["cache servers"]') ?> as array of host and port pairs.
       Here is the code:
     </p>
     <?= pcx('$pinpie["cache servers"] = [
@@ -235,7 +235,7 @@ class CacherDisabled implements Cacher {
 ]', 'php') ?>
     <p>You can use this array to store configuration for your own custom cacher as well.</p>
     <p>
-      Make sure you have set unique salt for every site in <?= scx('CFG::$random_stuff') ?> variable.
+      Make sure you have set unique salt for every site in <?= scx('PinPIE::$conf->random_stuff') ?> variable.
       That will prevent possible hash collisions for different snippets.
     </p>
   </section>
@@ -260,7 +260,7 @@ interface Cacher {
     <?= pcx('PinPIE::injectCacher($cacher);') ?>
     <p>where <b>$cacher</b> is your object implemented from <b>\PinPIE\Cacher</b> interface.</p>
     <p>
-      You don't have to, but it's better to set <?= scx('CFG::$pinpie["cache type"]') ?> to "custom" or "disabled" in config, because
+      You don't have to, but it's better to set <?= scx('PinPIE::$conf->pinpie["cache type"]') ?> to "custom" or "disabled" in config, because
       "files" cacher will be loaded by default, even if it will not be used.
     </p>
     <p>
@@ -287,7 +287,7 @@ interface Cacher {
     </p>
     <p>
       PinPIE allow you to ignore url or GET-params, and set the cache hash generation rules.
-      Caching rules could be set in config file by <?= scx('CFG::$pinpie["cache rules"]') ?>. Here are the default rules:
+      Caching rules could be set in config file by <?= scx('PinPIE::$conf->pinpie["cache rules"]') ?>. Here are the default rules:
     </p>
     <?= pcx('"cache rules" => [
   "default" => ["ignore url" => false, "ignore query params" => false],

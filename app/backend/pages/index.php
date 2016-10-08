@@ -1,3 +1,4 @@
+[[@template=main]]
 <h1>English:</h1>
 <p><a href="/en/download">Download</a></p>
 <p><a href="/en/manual">Manual</a></p>

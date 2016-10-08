@@ -1,3 +1,4 @@
+[title[=Примеры]]
 [sidemenu[ru/examples/sidemenu]]
 
 <article>

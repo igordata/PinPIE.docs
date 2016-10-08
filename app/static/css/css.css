@@ -1,67 +1,15 @@
-html { font-size: 16px; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+* { margin: 0px; padding: 0px; box-sizing: border-box; outline: none; }
+html { font-size: calc( (100vw - 300px)/(1920 - 300) * (22 - 14) + 14px); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+button::-moz-focus-inner, input[type="reset"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, input[type="submit"]::-moz-focus-inner, input[type="file"] > input[type="button"]::-moz-focus-inner { border: none; }
+/* */
 #menu { width: 20%; }
 #content { width: 80%; }
-
-@media only screen and (min-width: 100px) {
-  /* Small screen, non-retina */
-  html {font-size: 10px;}
-  #menu { width: 100%; }
-  #content { width: 100%; }
-}
-
-@media
-only screen and (-webkit-min-device-pixel-ratio: 2)      and (min-width: 320px),
-only screen and (   min--moz-device-pixel-ratio: 2)      and (min-width: 320px),
-only screen and (     -o-min-device-pixel-ratio: 2/1)    and (min-width: 320px),
-only screen and (        min-device-pixel-ratio: 2)      and (min-width: 320px),
-only screen and (                min-resolution: 192dpi) and (min-width: 320px),
-only screen and (                min-resolution: 2dppx)  and (min-width: 320px) {
-  /* Small screen, retina, stuff to override above media query */
-  html {font-size: 14px;}
-}
-@media only screen and (min-width: 700px) {
-  /* Medium screen, non-retina */
-  html {font-size: 12px;}
-  #menu { width: 30%; }
-  #content { width: 70%; }
-}
-
-@media
-only screen and (-webkit-min-device-pixel-ratio: 2)      and (min-width: 700px),
-only screen and (   min--moz-device-pixel-ratio: 2)      and (min-width: 700px),
-only screen and (     -o-min-device-pixel-ratio: 2/1)    and (min-width: 700px),
-only screen and (        min-device-pixel-ratio: 2)      and (min-width: 700px),
-only screen and (                min-resolution: 192dpi) and (min-width: 700px),
-only screen and (                min-resolution: 2dppx)  and (min-width: 700px) {
-  /* Medium screen, retina, stuff to override above media query */
-  html {font-size: 16px;}
-}
-
-@media only screen and (min-width: 1300px) {
-  /* Large screen, non-retina */
-  html {font-size: 14px;}
-  #menu { width: 20%; }
-  #content { width: 80%; }
-}
-
-@media
-only screen and (-webkit-min-device-pixel-ratio: 2)      and (min-width: 1300px),
-only screen and (   min--moz-device-pixel-ratio: 2)      and (min-width: 1300px),
-only screen and (     -o-min-device-pixel-ratio: 2/1)    and (min-width: 1300px),
-only screen and (        min-device-pixel-ratio: 2)      and (min-width: 1300px),
-only screen and (                min-resolution: 192dpi) and (min-width: 1300px),
-only screen and (                min-resolution: 2dppx)  and (min-width: 1300px) {
-  /* Large screen, retina, stuff to override above media query */
-  html {font-size: 18px;}
-}
-
-* { margin: 0px; padding: 0px; box-sizing: border-box; outline: none; }
-button::-moz-focus-inner, input[type="reset"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, input[type="submit"]::-moz-focus-inner, input[type="file"] > input[type="button"]::-moz-focus-inner { border: none; }
-div#content-wrapper { width: 90%; margin: 10px auto; }
+main { margin-bottom: 5rem; }
+div#content-wrapper { width: 90%; margin: 1rem auto; }
 header { display: block; }
-#site-header {color:grey;}
-#site-header>h1>a {color: inherit; text-decoration: inherit;}
-#site-header>h1>a:hover {text-decoration: underline;}
+#site-header { color: grey; }
+#site-header > h1 > a { color: inherit; text-decoration: inherit; }
+#site-header > h1 > a:hover { text-decoration: underline; }
 .clear { clear: both; }
 footer { display: block; clear: both; }
 /* */
@@ -72,19 +20,18 @@ footer { display: block; clear: both; }
 #menu > ul > li > ul > li > a { color: #565656; }
 #menu ul > li > a:hover { color: #23527c; }
 #menu ul > li > a.active { color: #337ab7; }
-#menu ul > li > ul > li { padding-left: 15px; }
+#menu ul > li > ul > li { padding-left: 1rem; }
 #menu ul > li > ul > li > ul > li { font-size: 0.75rem; }
 #content { float: right; height: 100%; }
-/* highlight.js inline style */
-span > code.hljs { display: inline; margin: 0; padding: 1px; }
 article a { color: #337ab7; text-decoration: none; }
 article a:hover { color: #23527c; text-decoration: underline; }
-span > code { display: inline; margin: 0; padding: 1px; background: #f8f8f8; }
+span > code, span > code.hljs { display: inline; margin: 0; padding: 0px 0.3rem; background: #f8f8f8; font-size: 90%; border-radius: 0.3rem; }
 span > code a { color: inherit; text-decoration: underline; }
-pre > code { display: block; margin: 0 0 0.5rem; padding: 0.5em; background: #f8f8f8; }
+pre > code { display: block; margin: 0 0 0.5rem; padding: 0.5em; border: 1px solid lightgrey;}
+pre > code.hljs {background: inherit;}
 pre > code a { color: inherit; text-decoration: underline; }
-article > header > h1 { font-size: 2rem; padding-bottom: 0.5rem;}
-article > header { padding-top: 0; padding-bottom: 0.1rem; margin-bottom: 1rem; border-bottom: 1px solid #eee; }
+article > header > h1 { font-size: 2rem; padding-bottom: 0.5rem; }
+article > header { padding-top: 0; padding-bottom: 0.1rem; margin-bottom: 1rem; border-bottom: 1px solid #eeeeee; }
 section > header a[name] { color: lightgrey; }
 section > header a[name]:hover { color: grey; }
 section h1 { font-weight: 500; font-size: 1.5rem; margin-top: 3rem; margin-bottom: 0.5rem; }

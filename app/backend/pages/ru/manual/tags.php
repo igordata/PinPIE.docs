@@ -1,9 +1,10 @@
-[title[=Теги]]
+[title[=Все теги PinPIE]]
 [sidemenu[ru/manual/sidemenu]]
 [menu tags[=
 <ul>
   <li><a href="#chunk">Чанк</a></li>
   <li><a href="#snippet">Сниппет</a></li>
+  <li><a href="#page">PAGE</a></li>
   <li><a href="#snippet-caching">Кэширование сниппетов</a></li>
   <li><a href="#constant">Константа</a></li>
   <li><a href="#placeholder">Плейсхолдер</a></li>
@@ -22,19 +23,49 @@
         Чанк
       </h1>
       <p>Синтаксис: <?= scx('[[chunk]]') ?></p>
+      <p>Настройки: <?= scx('$tags[""]') ?></p>
+      <p>Класс: <?= scx('\pinpie\pinpie\Tags\Chunk') ?></p>
     </header>
     <p>
-      Чанк это просто текст, содержащийся в файле с расширением *.php <a href="/ru/manual/config#chunks-folder">в папке /chunks</a>.
-      Встретив такую конструкцию <?= scx('[[some_chunk]]') ?> PinPIE попробует найти файл "/chunks/some_chunk.php"
-      и загрузит его содержимое, как простой текст.
-      PinPIE будет парсить этот текст в поисках других тегов, но php-код исполнен не будет.
+      Чанк это просто текст, содержащийся в файле с расширением *.php
+      в папке <?= scx('$tags[""]["folder"]') ?>.
+      Встретив такую конструкцию <?= scx('[[some_chunk]]') ?> PinPIE попробует найти файл
+    </p>
+    <?= pcx('$tags[""]["folder"] . DIRECTORY_SEPARATOR . "some_chunk.php"') ?>
+    и загрузит его содержимое, как простой текст.
+    PinPIE будет парсить этот текст в поисках других тегов, но php-код исполнен не будет.
     </p>
     <p>
       Для лучшей организации, можно размещать чанки внутри папок:
       <?= scx('[[some/chunk]]') ?> или <?= scx('[[some/long/path/chunk]]') ?>.
     </p>
+    <h2>Настройки</h2>
+    <h3>Дефолты</h3>
+    <?= pcx('$tags[""] => [
+    "class" => "\pinpie\pinpie\Tags\Chunk",
+    "folder" => $this->pinpie->root . DIRECTORY_SEPARATOR . "chunks",
+    "realpath check" => true,
+]') ?>
+    <h3>Описание</h3>
+    <ul>
+      <li>class &mdash;
+        Определяет, какой класс будет использован при создании экземпляра чанка.
+        Можно задать свой класс, если требуется.
+      </li>
+      <li>
+        folder &mdash;
+        Задаёт папку, где PinPIE будет искать файлы чанков.
+      </li>
+      <li>
+        realpath check &mdash;
+        Проверка принадлежности пути к файлу той папке, в которой он должен быть.
+        Служит для защиты от путей типа <?= scx('..\\..\\..\\file.php') ?>, но может быть отключен в случае
+        использования линков или прочей необходимости.
+      </li>
+    </ul>
     <p>Больше примеров использования тегов можно найти в <a href="/ru/examples/tags">примерах тегов</a>.</p>
   </section>
+
   <section>
     <header>
       <h1>
@@ -42,6 +73,8 @@
         Сниппет
       </h1>
       <p>Синтаксис: <?= scx('[[$snippet]]') ?></p>
+      <p>Настройки: <?= scx('$tags[\'$\']') ?></p>
+      <p>Класс: <?= scx('\pinpie\pinpie\Tags\Snippet') ?></p>
     </header>
     <p>
       Сниппет это файл php, который будет заинклюден, исполнен и вывод будет спарсен в поисках других тегов.
@@ -58,7 +91,71 @@
       Если изменятся переменные или их значения, сниппет будет принудительно перепарсен.
       Так что во время активной разработки волноваться о кэше не придётся.
     </p>
+    <h2>Настройки</h2>
+    <h3>Дефолты</h3>
+    <?= pcx('$tags[\'$\'] => [
+    "class" => "\pinpie\pinpie\Tags\Snippet",
+    "folder" => $this->pinpie->root . DIRECTORY_SEPARATOR . "snippets",
+    "realpath check" => true,
+]') ?>
+    <h3>Описание</h3>
+    <ul>
+      <li>class &mdash;
+        Определяет, какой класс будет использован при создании экземпляра сниппета.
+        Можно задать свой класс, если требуется.
+      </li>
+      <li>
+        folder &mdash;
+        Задаёт папку, где PinPIE будет искать файлы сниппетов.
+      </li>
+      <li>
+        realpath check &mdash;
+        Проверка принадлежности пути к файлу той папке, в которой он должен быть.
+        Служит для защиты от путей типа <?= scx('..\\..\\..\\file.php') ?>, но может быть отключен в случае
+        использования линков или прочей необходимости.
+      </li>
+    </ul>
     <p>Больше примеров использования тегов можно найти в <a href="/ru/examples/tags">примерах тегов</a>.</p>
+  </section>
+
+  <section>
+    <header>
+      <h1>
+        <a name="page" href="#page">#</a>
+        PAGE
+      </h1>
+      <p>Синтаксис: нет</p>
+      <p>Настройки: <?= scx('$tags["PAGE"]') ?></p>
+      <p>Класс: <?= scx('\pinpie\pinpie\Tags\Page') ?></p>
+    </header>
+    <p>
+      Страница в PinPIE представлена в виде тега <?= scx('PAGE') ?>, который автоматически создаётся при запуске и является корнем для
+      других тегов.
+    </p>
+    <h2>Настройки</h2>
+    <h3>Дефолты</h3>
+    <?= pcx('$tags["PAGE"] => [
+    "class" => "\pinpie\pinpie\Tags\Page",
+    "folder" => $this->pinpie->root . DIRECTORY_SEPARATOR . "pages",
+    "realpath check" => true,
+]') ?>
+    <h3>Описание</h3>
+    <ul>
+      <li>class &mdash;
+        Определяет, какой класс будет использован при создании экземпляра страницы.
+        Можно задать свой класс, если требуется.
+      </li>
+      <li>
+        folder &mdash;
+        Задаёт папку, где PinPIE будет искать файлы страниц.
+      </li>
+      <li>
+        realpath check &mdash;
+        Проверка принадлежности пути к файлу той папке, в которой он должен быть.
+        Служит для защиты от путей типа <?= scx('..\\..\\..\\file.php') ?>, но может быть отключен в случае
+        использования линков или прочей необходимости.
+      </li>
+    </ul>
   </section>
 
   <section>
@@ -80,10 +177,10 @@
       <li><?= scx('[[<b>3600</b>$some_snippet]]') ?> &mdash; сниппет закешируется на час</li>
       <li>
         <?= scx('[[!$some_snippet]]') ?> &mdash; сниппет закеширован очень надолго, а именно на
-        <span><code>CFG::$pinpie['cache forever time']</code></span> секунд,
-        что по умолчанию равно <a href="http://php.net/manual/ru/reserved.constants.php#constant.php-int-max" target="_blank">PHP_INT_MAX</a>. Можно установить своё значение
-        <a href="/ru/manual/cfg#cache_forever_time">cache forever time</a>
-        в <a href="/ru/manual/config">конфиге</a>.
+        <span><code>PinPIE::$conf->pinpie['cache forever time']</code></span> секунд, что по умолчанию равно
+        <a href="http://php.net/manual/ru/reserved.constants.php#constant.php-int-max" target="_blank">PHP_INT_MAX</a>.
+        Можно установить своё значение <a href="/ru/manual/cache#usage">cache forever time</a>
+        в <a href="/ru/manual/config#pinpie-cache">конфиге</a>.
       </li>
     </ul>
     <p>Читайте об этом более подробно в доке по <a href="/ru/manual/cache">кэшу</a>.</p>
@@ -96,6 +193,7 @@
         Плейсхолдер
       </h1>
       <p>Синтаксис: <?= scx('[[*placeholder]]', 'html') ?></p>
+      <p>Не является настоящим тегом и не имеет настроек.</p>
     </header>
     <p>
       Вывод любого чанка, сниппета или константы можно засунуть как бы в переменную. Эта переменная может быть использована
@@ -163,6 +261,8 @@
         Константа
       </h1>
       <p>Синтаксис: <?= scx('[[=constant]]') ?></p>
+      <p>Настройки: нет</p>
+      <p>Класс: <?= scx('\pinpie\pinpie\Tags\Constant') ?></p>
     </header>
     <p>
       Константа это просто текст, который нужно вывести. Без указания плейсхолдера в этом нет смысла.
@@ -184,7 +284,8 @@
         Команда
       </h1>
       <p>Синтаксис: <?= scx('[[@template=main]]', 'html') ?></p>
-      <p>Синтаксис: <?= scx('[[#template=main]]', 'html') ?></p>
+      <p>Настройки: нет</p>
+      <p>Класс: <?= scx('\pinpie\pinpie\Tags\Command') ?></p>
     </header>
     <p>
       Для управления некоторыми функциями движка PinPIE на странице или в теге используйте команды.
@@ -200,7 +301,9 @@
         <a name="static-tags" href="#static-tags">#</a>
         Статик теги
       </h1>
-      <p>Синтаксис: <?= scx('[[%type=path]]') ?> </p>
+      <p>Синтаксис: <?= scx('[[%type=path]]') ?></p>
+      <p>Настройки: <?= scx('$tags["%"]') ?></p>
+      <p>Класс: <?= scx('\pinpie\pinpie\Tags\Staticon') ?></p>
     </header>
 
     <p>
@@ -233,12 +336,43 @@
     <?= pcx(h('<script type="text/javascript" src="/javascript/jquery.js?time=hash"></script>'), 'html') ?>
     <p>
       В случае необходимости, статик файлы могут находиться вне корневой папки сайта.
-      Вы можете установить в <?= scx('CFG::$pinpie["static folder"]') ?> путь к папке со статик файлами.
+      Вы можете установить в <?= scx('PinPIE::$conf->pinpie["static folder"]') ?> путь к папке со статик файлами.
       Дефолтное значение это <?= scx('ROOT') ?>
       (см. <a href="/ru/manual/constants#root">константы</a>).
     </p>
+    <h2>Настройки</h2>
+    <h3>Дефолты</h3>
+    <?= pcx('$tags["%"] => [
+    "class" => "\pinpie\pinpie\Tags\Staticon",
+    "folder" => $this->pinpie->root,
+    "realpath check" => true,
+    "gzip level" => 5,
+    "gzip types" => ["js", "css"],
+    "minify types" => ["js", "css"],
+    "minify function" => false,
+    "dimensions types" => ["img"],
+    "dimensions function" => false,
+    "draw function" => false,
+      ]') ?>
+    <h3>Описание</h3>
+    <ul>
+      <li>class &mdash;
+        Определяет, какой класс будет использован при создании экземпляра статик тега.
+        Можно задать свой класс, если требуется.
+      </li>
+      <li>
+        folder &mdash;
+        Задаёт папку, где PinPIE будет искать статические файлы.
+      </li>
+      <li>
+        realpath check &mdash;
+        Проверка принадлежности пути к файлу той папке, в которой он должен быть.
+        Служит для защиты от путей типа <?= scx('..\\..\\..\\style.css') ?>, но может быть отключен в случае
+        использования линков или прочей необходимости.
+      </li>
+    </ul>
     <p>
-      Более подробная информация о статик тегах, пре-минификации и предарихвации gzip содержится в
+      Более подробная информация о статик тегах, их настройках, пре-минификации и предарихвации gzip содержится в
       <a href="/ru/manual/static">статик доке</a>.
     </p>
   </section>
@@ -256,18 +390,23 @@
       или <a href="http://mustache.github.io/">mustache</a>, например. По сути это просто врапперы для вывода тегов.
       Код темплейта выполняется всегда, в отличии от контента тега, который может быть загружен из кэша.
     </p>
-    <p>
-      Более подробно можно прочитать в доке по <a href="/ru/manual/templates#tag-templates">темплейтам</a>.
-      Некоторые примеры использования темплейтов можно увидеть в <a href="/ru/examples/templates">примерах темплейтов</a>.
-    </p>
+
     <h3>Пример</h3>
     <p>Чтобы обернуть вывод сниппета в див, вам нужно создать темплейт с именем, допустим, "wrap" с таким кодом:</p>
     <?= pcx(h('<div>[[*content]]</div>')) ?>
     <p>И теперь можно прменить этот темплейт к сниппету вот так:</p>
-    <?= scx('[[$snippet]wrap]') ?>
+    <?= pcx('[[$snippet]wrap]') ?>
     <p>Допустим, код сниппета такой:</p>
     <?= pcx(h('<?php echo rand(1, 100); ?>'), 'php') ?>
     <p>Тогда мы получим такой результат:</p>
     <?= pcx(h('<div>42</div>'), 'html') ?>
+    <p>В темплейт можно передать параметры, как в сниппет.</p>
+    <?= pcx('[[$snippet]wrap?foo=bar]') ?>
+    <p>Они будут доступны в темплейте как обычные переменные PHP:</p>
+    <?= pcx('var_dump($foo); // bar','PHP') ?>
+    <p>
+      Более подробно можно прочитать в доке по <a href="/ru/manual/templates#tag-templates">темплейтам</a>.
+      Некоторые примеры использования темплейтов можно увидеть в <a href="/ru/examples/templates">примерах темплейтов</a>.
+    </p>
   </section>
 </article>

@@ -10,11 +10,11 @@
       <li>If it doesn't exist, path <span><code>/pages/about/index.php</span></code> will be checked</li>
     </ul>
     <p>
-      If none of this was found, then <?= scx('CFG::$pinpie["page not found"]') ?> will be included,
+      If none of this was found, then <?= scx('PinPIE::$conf->pinpie["page not found"]') ?> will be included,
       and HTTP response code will be set to 404.
     </p>
     <p>
-      Default value of <?= scx('CFG::$pinpie["page not found"]') ?> is <span><code class="html">index.php</span></code>,
+      Default value of <?= scx('PinPIE::$conf->pinpie["page not found"]') ?> is <span><code class="html">index.php</span></code>,
       and <b>it's strongly recommended to create a special page</b> to handle "not found" requests.
       The "not found" page will be shown at requested URL.
     </p>
@@ -23,7 +23,7 @@
   <section>
     <header><h1>Route to parent</h1></header>
     <p>
-      If option <?= scx('CFG::$pinpie["route to parent"]') ?> is defined in config and is greater than zero,
+      If option <?= scx('PinPIE::$conf->pinpie["route to parent"]') ?> is defined in config and is greater than zero,
       then PinPIE will try to find some file, according to requested path.
     </p>
     <p>
@@ -32,7 +32,7 @@
       for one step to check <span><code>/pages/very/long.php</span></code> and <span><code>/pages/very/long/index.php</span></code>.
     </p>
     <p>
-      This operation will be repeated for maximum <?= scx('CFG::$pinpie["route to parent"]') ?> times,
+      This operation will be repeated for maximum <?= scx('PinPIE::$conf->pinpie["route to parent"]') ?> times,
       and if no existing file will be found &mdash; the requested URL will be considered as "not found".
     </p>
     <p>

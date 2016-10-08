@@ -81,7 +81,7 @@
       <li><?= scx('[[<b>3600</b>$some_snippet]]') ?> &mdash; snippet is cached for one hour</li>
       <li>
         <?= scx('[[!$some_snippet]]') ?> &mdash; snippet is cached for
-        <span><code>CFG::$pinpie['cache forever time']</code></span> seconds,
+        <span><code>PinPIE::$conf->pinpie['cache forever time']</code></span> seconds,
         which by default is <a href="http://php.net/manual/en/reserved.constants.php#constant.php-int-max" target="_blank">PHP_INT_MAX</a>. You can set your own <a href="/en/manual/cfg#cache_forever_time">cache forever time</a>
         option value in <a href="/en/manual/config">config</a>.
       </li>
@@ -230,7 +230,7 @@ text]]') ?>
     <p>by default will create a html tag</p>
     <?= pcx(h('<script type="text/javascript" src="/javascript/jquery.js?time=hash"></script>'), 'html') ?>
     <p>
-      Static files could be located outside the site root folder. Set <?= scx('CFG::$pinpie["static folder"]') ?>
+      Static files could be located outside the site root folder. Set <?= scx('PinPIE::$conf->pinpie["static folder"]') ?>
       to path to your static files folder. Default value is <?= scx('ROOT') ?> (see <a href="/en/manual/constants#root">constants</a>).
     </p>
     <p>
